@@ -4,9 +4,15 @@
 
 ## Important Notes
 
+- [#1086](https://github.com/oauth2-proxy/oauth2-proxy/pull/1086) The extra validation to protect invalid session
+  deserialization from v6.0.0 (only) has been removed to improve performance. If you are on v6.0.0, either upgrade
+  to a version before this first and allow legacy sessions to expire gracefully or change your `cookie-secret`
+  value and force all sessions to reauthenticate.
+
 ## Breaking Changes
 
 ## Changes since v7.1.3
+- [#1086](https://github.com/oauth2-proxy/oauth2-proxy/pull/1086) Refresh sessions before token expiration if configured (@NickMeves)
 - [#1238](https://github.com/oauth2-proxy/oauth2-proxy/pull/1238) Added ADFS provider (@samirachoadi)
 - [#1227](https://github.com/oauth2-proxy/oauth2-proxy/pull/1227) Fix Refresh Session not working for multiple cookies (@rishi1111)
 - [#1063](https://github.com/oauth2-proxy/oauth2-proxy/pull/1063) Add Redis lock feature to lock persistent sessions (@Bibob7)
