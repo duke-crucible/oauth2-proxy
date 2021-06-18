@@ -1,3 +1,6 @@
+This fork exists to fix [this bug](https://github.com/oauth2-proxy/oauth2-proxy/issues/1243).
+Once that bug is resolved in oauth2-proxy, we can return to using their version.
+
 ![OAuth2 Proxy](/docs/static/img/logos/OAuth2_Proxy_horizontal.svg)
 
 [![Build Status](https://secure.travis-ci.org/oauth2-proxy/oauth2-proxy.svg?branch=master)](http://travis-ci.org/oauth2-proxy/oauth2-proxy)
