@@ -1,0 +1,28 @@
+
+name: Docker Image CI
+
+on:
+  push:
+    branches: 
+    - 'master'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build tagged Docker image
+      run: docker build . -f Dockerfile -t ghcr.io/duke-crucible/oauth2-proxy:${GITHUB_REF##*/}-${GITHUB_SHA}
+    - name: Push tagged Docker image
+      run: docker push ghcr.io/duke-crucible/oauth2-proxy:${GITHUB_REF##*/}-${GITHUB_SHA}
+    - name: Build latest Docker image
+      run: docker build . -f Dockerfile -t ghcr.io/duke-crucible/oauth2-proxy:${GITHUB_REF##*/}-latest
+    - name: Push latest Docker image
+      run: docker push ghcr.io/duke-crucible/oauth2-proxy:${GITHUB_REF##*/}-latest
