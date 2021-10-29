@@ -111,8 +111,8 @@ func newReverseProxy(target *url.URL, upstream options.Upstream, errorHandler Pr
         proxy.Transport = &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
-			Timeout:   0 * time.Second,
-			KeepAlive: 0 * time.Second,
+			Timeout:   3600 * time.Second,
+			KeepAlive: 3600 * time.Second,
 		}).DialContext,
 		ForceAttemptHTTP2:     true,
 		MaxIdleConns:          100,
