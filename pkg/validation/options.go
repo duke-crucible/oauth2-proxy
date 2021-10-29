@@ -5,12 +5,10 @@ import (
 	"crypto/tls"
 	"fmt"
 	"io/ioutil"
-        "net"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
-        "time"
 
 	"github.com/coreos/go-oidc/v3/oidc"
 	"github.com/golang-jwt/jwt"
@@ -40,10 +38,6 @@ func Validate(o *options.Options) error {
 		/* #nosec G402 */
 		insecureTransport := &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-                        DialContext: (&net.Dialer{
-                                Timeout:   3600 * time.Second,
-                                KeepAlive: 3600 * time.Second,
-                            }).DialContext,
 		}
 		http.DefaultClient = &http.Client{
                     Transport: insecureTransport,
@@ -56,22 +50,11 @@ func Validate(o *options.Options) error {
 				RootCAs:    pool,
 				MinVersion: tls.VersionTLS12,
 			}
-                        transport.DialContext = (&net.Dialer{
-                                Timeout:   3600 * time.Second,
-                                KeepAlive: 3600 * time.Second,
-                            }).DialContext
 			http.DefaultClient = &http.Client{Transport: transport}
 		} else {
 			msgs = append(msgs, fmt.Sprintf("unable to load provider CA file(s): %v", err))
 		}
-	} else {
-                transport := http.DefaultTransport.(*http.Transport).Clone()
-                transport.DialContext = (&net.Dialer{
-                        Timeout:   3600 * time.Second,
-                        KeepAlive: 3600 * time.Second,
-                }).DialContext
-                http.DefaultClient = &http.Client{Transport: transport}
-        }
+	}
 
 	if o.AuthenticatedEmailsFile == "" && len(o.EmailDomains) == 0 && o.HtpasswdFile == "" {
 		msgs = append(msgs, "missing setting for email validation: email-domain or authenticated-emails-file required."+
