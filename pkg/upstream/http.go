@@ -2,11 +2,12 @@ package upstream
 
 import (
 	"crypto/tls"
+        "net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"strings"
-
+        "time"
 	"github.com/mbland/hmacauth"
 	"github.com/oauth2-proxy/oauth2-proxy/v7/pkg/apis/middleware"
 	"github.com/oauth2-proxy/oauth2-proxy/v7/pkg/apis/options"
@@ -106,6 +107,19 @@ func newReverseProxy(target *url.URL, upstream options.Upstream, errorHandler Pr
 	} else {
 		proxy.FlushInterval = options.DefaultUpstreamFlushInterval
 	}
+
+        proxy.Transport = &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout:   0 * time.Second,
+			KeepAlive: 0 * time.Second,
+		}).DialContext,
+		ForceAttemptHTTP2:     true,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   10 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+        }
 
 	// InsecureSkipVerify is a configurable option we allow
 	/* #nosec G402 */
