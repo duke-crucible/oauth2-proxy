@@ -2,6 +2,7 @@ package upstream
 
 import (
 	"crypto/tls"
+        "net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -108,6 +109,9 @@ func newReverseProxy(target *url.URL, upstream options.Upstream, errorHandler Pr
 	}
 
         proxy.Transport = &http.Transport{
+                DialContext: (&net.Dialer{
+                        Timeout: 3600 * time.Second,
+                        KeepAlive: 3600 * time.Second}).DialContext,
                 IdleConnTimeout: 3600 * time.Second,
         }
 
@@ -116,6 +120,9 @@ func newReverseProxy(target *url.URL, upstream options.Upstream, errorHandler Pr
 	if upstream.InsecureSkipTLSVerify {
 		proxy.Transport = &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+                        DialContext: (&net.Dialer{
+                                Timeout: 3600 * time.Second,
+                                KeepAlive: 3600 * time.Second}).DialContext,
                         IdleConnTimeout: 3600 * time.Second,
 		}
 	}
