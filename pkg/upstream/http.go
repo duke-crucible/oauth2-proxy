@@ -111,7 +111,7 @@ func newReverseProxy(target *url.URL, upstream options.Upstream, errorHandler Pr
         proxy.Transport = &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		DialContext: (&net.Dialer{
-			Timeout:   3600 * time.Second,
+			Timeout:   3600 * time.Second,  // 1 hour.
 			KeepAlive: 3600 * time.Second,
 		}).DialContext,
 		ForceAttemptHTTP2:     true,
@@ -121,13 +121,15 @@ func newReverseProxy(target *url.URL, upstream options.Upstream, errorHandler Pr
 		ExpectContinueTimeout: 1 * time.Second,
         }
 
-	// InsecureSkipVerify is a configurable option we allow
+	// InsecureSkipVerify is a configurable option we allow... but I don't use it so I will remove it.
 	/* #nosec G402 */
+        /*
 	if upstream.InsecureSkipTLSVerify {
 		proxy.Transport = &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		}
 	}
+        */
 
 	// Ensure we always pass the original request path
 	setProxyDirector(proxy)
