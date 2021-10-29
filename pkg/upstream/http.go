@@ -6,6 +6,7 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"strings"
+        "time"
 	"github.com/mbland/hmacauth"
 	"github.com/oauth2-proxy/oauth2-proxy/v7/pkg/apis/middleware"
 	"github.com/oauth2-proxy/oauth2-proxy/v7/pkg/apis/options"
@@ -106,11 +107,16 @@ func newReverseProxy(target *url.URL, upstream options.Upstream, errorHandler Pr
 		proxy.FlushInterval = options.DefaultUpstreamFlushInterval
 	}
 
+        proxy.Transport = &http.Transport{
+                IdleConnTimeout: 3600 * time.Second,
+        }
+
 	// InsecureSkipVerify is a configurable option we allow... but I don't use it so I will remove it.
 	/* #nosec G402 */
 	if upstream.InsecureSkipTLSVerify {
 		proxy.Transport = &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+                        IdleConnTimeout: 3600 * time.Second,
 		}
 	}
 
